@@ -41,9 +41,9 @@ class Auth0WebAPI {
 
     if (authOpts.popup) {
       client.popup.login({...options, ...authOpts, ...authParams}, f)
+    } else {
+      client.redirect.login({...options, ...authOpts, ...authParams}, f);
     }
-
-    client.redirect.login({...options, ...authOpts, ...authParams}, f);
   }
 
   signOut(lockID, query) {
