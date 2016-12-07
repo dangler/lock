@@ -21,6 +21,7 @@ class Auth0WebAPI {
       redirectUri: opts.redirectUrl,
       responseMode: opts.responseMode,
       responseType: opts.responseType,
+      legacyMode: opts.legacyMode === false ? false : true,
       _sendTelemetry: opts._sendTelemetry === false ? false : true,
       _telemetryInfo: opts._telemetryInfo || default_telemetry
     });
@@ -39,7 +40,10 @@ class Auth0WebAPI {
     const f = loginCallback(!authOpts.popup, cb);
     const client = this.clients[lockID];
 
-    if (authOpts.popup) {
+    if (!this.authOpts[lockID].legacyMode) {
+      options.realm = options.connection;
+      client.client.loginRealm({...options, ...authOpts, ...authParams}, f);
+    } else if (authOpts.popup) {
       client.popup.login({...options, ...authOpts, ...authParams}, f)
     } else {
       client.redirect.login({...options, ...authOpts, ...authParams}, f);
